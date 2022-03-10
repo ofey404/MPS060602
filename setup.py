@@ -7,10 +7,19 @@
     Learn more under: https://pyscaffold.org/
 """
 from setuptools import setup
+from sys import platform
 
 if __name__ == "__main__":
     try:
-        setup(use_scm_version={"version_scheme": "no-guess-dev"})
+        if platform != "win32":
+            print(
+                "\n\nMPS-060602 acquisition card only support windows,",
+                "but platform is {}.".format(platform),
+            )
+            raise
+        setup(
+            use_scm_version={"version_scheme": "no-guess-dev"},
+        )
     except:  # noqa
         print(
             "\n\nAn error occurred while building the project, "

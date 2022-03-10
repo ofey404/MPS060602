@@ -34,10 +34,14 @@ MPS060602
 =========
 
 
-    Add a short description here!
+    Python wrapper of MPS-060602 Acquisition Card.
 
+MPS-060602 is a Dual Channel, 16 Bit High Speed IEPE Vibration ICP Acquisition Card, with USB Support and LabVIEW Software.
 
-A longer description of your project goes here...
+This package is a wrapper of its DLL.
+
+It's made by Beijing MPS electronic, `official website (Chinese) <http://www.mps-electronic.com.cn/>`_.
+
 
 
 .. _pyscaffold-notes:
