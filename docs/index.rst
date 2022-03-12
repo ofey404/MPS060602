@@ -30,6 +30,7 @@ Contents
    :maxdepth: 2
 
    Overview <readme>
+   MPS-060602 Tutorial <tutorial>
    Contributions & Help <contributing>
    License <license>
    Authors <authors>
