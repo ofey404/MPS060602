@@ -4,6 +4,14 @@ mps060602 package
 Submodules
 ----------
 
+mps060602.core module
+---------------------
+
+.. automodule:: mps060602.core
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 mps060602.skeleton module
 -------------------------
 

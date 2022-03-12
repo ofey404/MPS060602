@@ -1,6 +1,5 @@
 .. _installation:
 
-
 ==================
 Installation Guide
 ==================
@@ -27,9 +26,9 @@ Install drivers:
 3. Check :download:`User Guide V1.0 (Chinese) <_static/MPS-060602UserGuideChineseV1.0.pdf>`
    for more details.
 
-----------------------
-Check Acquisition Card
-----------------------
+-------------------------
+Check Waveform Generator
+-------------------------
 
 A MPS-060602 card and a waveform generator is needed.
 If you have an oscilloscope, it would be better.
@@ -39,6 +38,10 @@ a oscilloscope:
 
 .. image:: _static/wave-generator.jpg
     :width: 75%
+
+----------------------
+Check Acquisition Card
+----------------------
 
 If we have labview 7.1+ installed, we can use
 :download:`MPS-060602 Data Acquisition V2.0.exe <_static/MPS-060602 Data Acquisition V2.0/MPS-060602 Data Acquisition V2.0.exe>`
@@ -55,3 +58,4 @@ And use MPS-060602 Data Acquisition V2.0.exe to observe the waveform:
 
 .. image:: _static/labview-interface.jpg
     :width: 75%
+
