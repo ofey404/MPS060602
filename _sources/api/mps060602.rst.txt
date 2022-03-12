@@ -1,0 +1,21 @@
+mps060602 package
+=================
+
+Submodules
+----------
+
+mps060602.skeleton module
+-------------------------
+
+.. automodule:: mps060602.skeleton
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: mps060602
+   :members:
+   :undoc-members:
+   :show-inheritance:
