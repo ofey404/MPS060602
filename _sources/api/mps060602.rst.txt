@@ -12,6 +12,14 @@ mps060602.core module
    :undoc-members:
    :show-inheritance:
 
+mps060602.errors module
+-----------------------
+
+.. automodule:: mps060602.errors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 mps060602.skeleton module
 -------------------------
 
