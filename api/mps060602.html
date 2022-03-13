@@ -40,15 +40,134 @@
 <section id="module-mps060602.core">
 <span id="mps060602-core-module"></span><h2>mps060602.core module<a class="headerlink" href="#module-mps060602.core" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="mps060602.core.MPS01602">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">MPS01602</span></span><a class="reference internal" href="../_modules/mps060602/core.html#MPS01602"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS01602" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="mps060602.core.MPS01602.hello">
-<span class="sig-name descname"><span class="pre">hello</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mps060602/core.html#MPS01602.hello"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS01602.hello" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mps060602.core.ADChannelMode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">ADChannelMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#ADChannelMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.ADChannelMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/enum.html#enum.Enum" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.ADChannelMode.difference">
+<span class="sig-name descname"><span class="pre">difference</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mps060602.core.ADChannelMode.difference" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.ADChannelMode.forbid">
+<span class="sig-name descname"><span class="pre">forbid</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#mps060602.core.ADChannelMode.forbid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.ADChannelMode.in1">
+<span class="sig-name descname"><span class="pre">in1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mps060602.core.ADChannelMode.in1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.ADChannelMode.in1_and_2">
+<span class="sig-name descname"><span class="pre">in1_and_2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#mps060602.core.ADChannelMode.in1_and_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.ADChannelMode.in2">
+<span class="sig-name descname"><span class="pre">in2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mps060602.core.ADChannelMode.in2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mps060602.core.ADSampleRate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">ADSampleRate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_not_allign_to_1000</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#ADSampleRate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.ADSampleRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="mps060602.core.ADSampleRateOutOfRange">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">ADSampleRateOutOfRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#ADSampleRateOutOfRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.ADSampleRateOutOfRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mps060602.core.MPS060602Error" title="mps060602.core.MPS060602Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">mps060602.core.MPS060602Error</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="mps060602.core.ADSampleRateRoundToNearest1000">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">ADSampleRateRoundToNearest1000</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#ADSampleRateRoundToNearest1000"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.ADSampleRateRoundToNearest1000" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mps060602.core.MPS060602Error" title="mps060602.core.MPS060602Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">mps060602.core.MPS060602Error</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mps060602.core.MPS060602">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">MPS060602</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mps060602.core.MPS060602.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.configure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mps060602.core.MPS060602.hello">
+<span class="sig-name descname"><span class="pre">hello</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.hello"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.hello" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="mps060602.core.MPS060602Error">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">MPS060602Error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602Error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/exceptions.html#Exception" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mps060602.core.MPS060602Para">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">MPS060602Para</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ADChannel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mps060602.core.ADChannelMode" title="mps060602.core.ADChannelMode"><span class="pre">mps060602.core.ADChannelMode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ADSampleRate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mps060602.core.ADSampleRate" title="mps060602.core.ADSampleRate"><span class="pre">mps060602.core.ADSampleRate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mps060602.core.PGAAmpRate" title="mps060602.core.PGAAmpRate"><span class="pre">mps060602.core.PGAAmpRate</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602Para"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602Para" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.MPS060602Para.ADChannel">
+<span class="sig-name descname"><span class="pre">ADChannel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mps060602.core.ADChannelMode" title="mps060602.core.ADChannelMode"><span class="pre">mps060602.core.ADChannelMode</span></a></em><a class="headerlink" href="#mps060602.core.MPS060602Para.ADChannel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.MPS060602Para.ADSampleRate">
+<span class="sig-name descname"><span class="pre">ADSampleRate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mps060602.core.ADSampleRate" title="mps060602.core.ADSampleRate"><span class="pre">mps060602.core.ADSampleRate</span></a></em><a class="headerlink" href="#mps060602.core.MPS060602Para.ADSampleRate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.MPS060602Para.Gain">
+<span class="sig-name descname"><span class="pre">Gain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mps060602.core.PGAAmpRate" title="mps060602.core.PGAAmpRate"><span class="pre">mps060602.core.PGAAmpRate</span></a></em><a class="headerlink" href="#mps060602.core.MPS060602Para.Gain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mps060602.core.PGAAmpRate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">PGAAmpRate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#PGAAmpRate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.PGAAmpRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/enum.html#enum.Enum" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.PGAAmpRate.range_10V">
+<span class="sig-name descname"><span class="pre">range_10V</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#mps060602.core.PGAAmpRate.range_10V" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.PGAAmpRate.range_1v">
+<span class="sig-name descname"><span class="pre">range_1v</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#mps060602.core.PGAAmpRate.range_1v" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.PGAAmpRate.range_2V">
+<span class="sig-name descname"><span class="pre">range_2V</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mps060602.core.PGAAmpRate.range_2V" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mps060602.core.PGAAmpRate.range_5V">
+<span class="sig-name descname"><span class="pre">range_5V</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mps060602.core.PGAAmpRate.range_5V" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mps060602.core.inpackage_dll_path">
+<span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">inpackage_dll_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mps060602/core.html#inpackage_dll_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.inpackage_dll_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mps060602.core.is_os_64bit">
+<span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">is_os_64bit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mps060602/core.html#is_os_64bit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.is_os_64bit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-mps060602.skeleton">
