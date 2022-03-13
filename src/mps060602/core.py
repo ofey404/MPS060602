@@ -1,17 +1,16 @@
 import platform
-from ctypes import cdll, c_int
+from ctypes import c_int, cdll, sizeof
 from ctypes.wintypes import HANDLE
-from pathlib import Path
-from enum import IntEnum
-
 from dataclasses import dataclass
+from enum import IntEnum
+from pathlib import Path
 
 from .errors import (
     ADSampleRateOutOfRange,
     ADSampleRateRoundToNearest1000,
-    OpenDeviceFailed,
     ConfigureDeviceFailed,
     InvalidDeviceNumber,
+    OpenDeviceFailed,
 )
 
 
@@ -80,7 +79,8 @@ class MPS060602:
         self.dll.MPS_Configure.restype = c_int
 
     def __open_device(self, device_number: int) -> Device:
-        failed = lambda handle: handle == -1
+        all_bit_1 = sum([1 << i for i in range(sizeof(HANDLE) * 8)])
+        failed = lambda handle: handle == all_bit_1
         handle = self.dll.MPS_OpenDevice(device_number)
         if failed(handle):
             raise OpenDeviceFailed(device_number)
