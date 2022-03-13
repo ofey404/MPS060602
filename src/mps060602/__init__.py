@@ -1,5 +1,6 @@
 import sys
-from .core import MPS01602
+from .core import MPS060602
+from .core import ADSampleRate, PGAAmpRate, ADChannelMode
 
 if sys.version_info[:2] >= (3, 8):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
