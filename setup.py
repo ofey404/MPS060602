@@ -23,7 +23,7 @@ if __name__ == "__main__":
             author="Weiwen Chen",
             author_email="ofey206@gmail.com",
             license="MIT",
-            install_requires=["pyserial", "dataclasses"],
+            install_requires=["dataclasses"],
             platform="Windows",
         )
     except:  # noqa

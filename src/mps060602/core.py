@@ -1,9 +1,18 @@
 import platform
-from ctypes import cdll
+from ctypes import cdll, c_int
+from ctypes.wintypes import HANDLE
 from pathlib import Path
-from enum import Enum
+from enum import IntEnum
 
 from dataclasses import dataclass
+
+from .errors import (
+    ADSampleRateOutOfRange,
+    ADSampleRateRoundToNearest1000,
+    OpenDeviceFailed,
+    ConfigureDeviceFailed,
+    InvalidDeviceNumber,
+)
 
 
 def is_os_64bit() -> bool:
@@ -17,26 +26,7 @@ def inpackage_dll_path() -> str:
     return str(Path(__file__).parent / "static" / filename)
 
 
-class MPS060602Error(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
-
-
-class ADSampleRateOutOfRange(MPS060602Error):
-    def __init__(self, sample_rate, *args: object) -> None:
-        message = "AD sample rate out of range, given {}".format(sample_rate)
-        super().__init__(message, *args)
-
-
-class ADSampleRateRoundToNearest1000(MPS060602Error):
-    def __init__(self, sample_rate, *args: object) -> None:
-        message = "AD sample rate would rounded to nearest 1000, given {}".format(
-            sample_rate
-        )
-        super().__init__(message, *args)
-
-
-class ADChannelMode(Enum):
+class ADChannelMode(IntEnum):
     forbid = 0
     in1 = 1
     in2 = 2
@@ -44,7 +34,7 @@ class ADChannelMode(Enum):
     difference = 4
 
 
-class PGAAmpRate(Enum):
+class PGAAmpRate(IntEnum):
     range_10V = 0
     range_5V = 1
     range_2V = 2
@@ -63,22 +53,50 @@ class ADSampleRate(int):
 
 @dataclass
 class MPS060602Para:
-    ADChannel: ADChannelMode
-    ADSampleRate: ADSampleRate
-    Gain: PGAAmpRate
+    ADChannel: ADChannelMode = ADChannelMode.in1_and_2
+    ADSampleRate: ADSampleRate = ADSampleRate(1000)
+    Gain: PGAAmpRate = PGAAmpRate.range_10V
 
 
 class MPS060602:
+    @dataclass
+    class Device:
+        handle: HANDLE
+        number: int
+
     def __init__(self, device_number: int = 0) -> None:
-        dll_path = inpackage_dll_path()
-        self.dll = cdll.LoadLibrary(dll_path)
-        self.handle = self.__open_device(device_number=device_number)
+        invalid = lambda dn: dn < 0 or dn > 9
+        if invalid(device_number):
+            raise InvalidDeviceNumber(device_number)
+        self.dll = cdll.LoadLibrary(inpackage_dll_path())
+        self.__init_dll_wrappers()
+        self.device = self.__open_device(device_number)
 
-    def __open_device(self, device_number: int):
-        pass
+    def __init_dll_wrappers(self):
+        self.dll.MPS_OpenDevice.argtypes = (c_int,)
+        self.dll.MPS_OpenDevice.restype = HANDLE
 
-    def configure(self):
-        pass
+        self.dll.MPS_Configure.argtypes = (c_int, c_int, c_int, HANDLE)
+        self.dll.MPS_Configure.restype = c_int
 
-    def hello(self) -> str:
-        return "hello"
+    def __open_device(self, device_number: int) -> Device:
+        failed = lambda handle: handle == -1
+        handle = self.dll.MPS_OpenDevice(device_number)
+        if failed(handle):
+            raise OpenDeviceFailed(device_number)
+        return self.Device(handle, device_number)
+
+    def configure(self, para: MPS060602Para):
+        failed = lambda res: res == 0
+        if failed(
+            self.__configure_raw(
+                para.ADChannel,
+                para.ADSampleRate,
+                para.Gain,
+                self.device.handle,
+            )
+        ):
+            raise ConfigureDeviceFailed(self.device.number)
+
+    def __configure_raw(self, ADChannel, ADSampleRate, Gain, DeviceHandle):
+        return self.dll.MPS_Configure(ADChannel, ADSampleRate, Gain, DeviceHandle)
