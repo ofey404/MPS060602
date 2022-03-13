@@ -32,19 +32,18 @@
             
   <h1>Source code for mps060602.core</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">cdll</span><span class="p">,</span> <span class="n">c_int</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">cdll</span><span class="p">,</span> <span class="n">sizeof</span>
 <span class="kn">from</span> <span class="nn">ctypes.wintypes</span> <span class="kn">import</span> <span class="n">HANDLE</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span>
-
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ADSampleRateOutOfRange</span><span class="p">,</span>
     <span class="n">ADSampleRateRoundToNearest1000</span><span class="p">,</span>
-    <span class="n">OpenDeviceFailed</span><span class="p">,</span>
     <span class="n">ConfigureDeviceFailed</span><span class="p">,</span>
     <span class="n">InvalidDeviceNumber</span><span class="p">,</span>
+    <span class="n">OpenDeviceFailed</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -113,7 +112,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Configure</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int</span>
 
     <span class="k">def</span> <span class="nf">__open_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Device</span><span class="p">:</span>
-        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">handle</span><span class="p">:</span> <span class="n">handle</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">all_bit_1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sizeof</span><span class="p">(</span><span class="n">HANDLE</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)])</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">handle</span><span class="p">:</span> <span class="n">handle</span> <span class="o">==</span> <span class="n">all_bit_1</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_OpenDevice</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="n">handle</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">OpenDeviceFailed</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
