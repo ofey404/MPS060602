@@ -65,6 +65,17 @@
 
 
 <div class="viewcode-block" id="ADChannelMode"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.ADChannelMode">[docs]</a><span class="k">class</span> <span class="nc">ADChannelMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mode to select input AD channel.</span>
+
+<span class="sd">    In ``in1_and_2`` mode:</span>
+
+<span class="sd">    * ``MPS060602.buffer[0::2]`` are data from ``In1``.</span>
+<span class="sd">    * ``MPS060602.buffer[1::2]`` are data from ``In2``.</span>
+
+<span class="sd">    In ``difference`` mode, :func:`MPS060602.data_in` put</span>
+<span class="sd">    voltage difference of ``In1`` and ``In2`` into buffer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">forbid</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">in1</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">in2</span> <span class="o">=</span> <span class="mi">2</span>
@@ -73,7 +84,18 @@
 
 
 <div class="viewcode-block" id="PGAAmpRate"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.PGAAmpRate">[docs]</a><span class="k">class</span> <span class="nc">PGAAmpRate</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="n">range_10V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># (index, volt)</span>
+    <span class="sd">&quot;&quot;&quot;Information to control on board Programmable Gain Amplifier (PGA).</span>
+
+<span class="sd">    ``range_10V = (0, 10)`` (index, volt):</span>
+
+<span class="sd">    * ``index`` would be passed to DLL function``MPS_Configure``, which is</span>
+<span class="sd">    handled in :func:`MPS060602.configure_and_update_state`.</span>
+
+<span class="sd">    * ``volt`` is the corresponding volt range of the ``index``, used to</span>
+<span class="sd">    convert raw data to voltage in :func:`MPS060602.to_volt`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">range_10V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
     <span class="n">range_5V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
     <span class="n">range_2V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">range_1v</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -84,6 +106,18 @@
 
 
 <div class="viewcode-block" id="MPS060602Para"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602Para">[docs]</a><span class="k">class</span> <span class="nc">MPS060602Para</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Configuration parameters of MPS060602 acquisition card.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ADChannel (ADChannelMode, optional): Input AD channel mode.Defaults to ADChannelMode.in1_and_2.</span>
+<span class="sd">        ADSampleRate (int, optional): Sample rate, should be in [1000, 450000], rounded to closest 1000. Defaults to 1000.</span>
+<span class="sd">        Gain (PGAAmpRate, optional): On board gain amplifier mode. Defaults to PGAAmpRate.range_10V.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ADSampleRateOutOfRange: Given invalid AD sample rate.</span>
+<span class="sd">        ADSampleRateRoundToNearest1000: Given sample rate doesn&#39;t round to 1000.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ADChannel</span><span class="p">:</span> <span class="n">ADChannelMode</span> <span class="o">=</span> <span class="n">ADChannelMode</span><span class="o">.</span><span class="n">in1_and_2</span><span class="p">,</span>
@@ -101,15 +135,26 @@
 
 
 <div class="viewcode-block" id="MPS060602"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602">[docs]</a><span class="k">class</span> <span class="nc">MPS060602</span><span class="p">:</span>
-<div class="viewcode-block" id="MPS060602.Device"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.Device">[docs]</a>    <span class="nd">@dataclass</span>
-    <span class="k">class</span> <span class="nc">Device</span><span class="p">:</span>
-        <span class="n">handle</span><span class="p">:</span> <span class="n">HANDLE</span>
-        <span class="n">number</span><span class="p">:</span> <span class="nb">int</span></div>
+    <span class="sd">&quot;&quot;&quot;Python wrapper for MPS060602 acquisition card.</span>
 
-<div class="viewcode-block" id="MPS060602.InternalState"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.InternalState">[docs]</a>    <span class="nd">@dataclass</span>
-    <span class="k">class</span> <span class="nc">InternalState</span><span class="p">:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        para (MPS060602Para): Configuration parameters for MPS060602 card.</span>
+<span class="sd">        device_number (int, optional): Device number of card, int in [0, 9]. Defaults to 0.</span>
+<span class="sd">        buffer_size (int, optional): Data buffer size for :func:`MPS060602.data_in`. Defaults to 1024.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        InvalidDeviceNumber: Given invliad ``device_number``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@dataclass</span>
+    <span class="k">class</span> <span class="nc">__Device</span><span class="p">:</span>
+        <span class="n">handle</span><span class="p">:</span> <span class="n">HANDLE</span>
+        <span class="n">number</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@dataclass</span>
+    <span class="k">class</span> <span class="nc">__InternalState</span><span class="p">:</span>
         <span class="n">parameter</span><span class="p">:</span> <span class="n">MPS060602Para</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">started</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+        <span class="n">started</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">para</span><span class="p">:</span> <span class="n">MPS060602Para</span><span class="p">,</span> <span class="n">device_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">buffer_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span>
@@ -123,7 +168,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__open_device</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_ushort</span> <span class="o">*</span> <span class="n">buffer_size</span><span class="p">)()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">InternalState</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__InternalState</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configure_and_update_state</span><span class="p">(</span><span class="n">para</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init_dll_wrappers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -146,16 +191,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_CloseDevice</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">HANDLE</span><span class="p">,)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_CloseDevice</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int</span>
 
-    <span class="k">def</span> <span class="nf">__open_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Device</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__open_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">__Device</span><span class="p">:</span>
         <span class="n">all_bit_1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sizeof</span><span class="p">(</span><span class="n">HANDLE</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)])</span>
         <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">handle</span><span class="p">:</span> <span class="n">handle</span> <span class="o">==</span> <span class="n">all_bit_1</span>
 
         <span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_OpenDevice</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="n">handle</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">OpenDeviceFailed</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Device</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">device_number</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Device</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">device_number</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MPS060602.configure_and_update_state"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.configure_and_update_state">[docs]</a>    <span class="k">def</span> <span class="nf">configure_and_update_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para</span><span class="p">:</span> <span class="n">MPS060602Para</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Configure MPS060602 card and update the internal object state.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            para (MPS060602Para): Parameters.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ConfigureDeviceFailed: Failed to run configuration function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__configure_raw</span><span class="p">(</span>
@@ -172,6 +225,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Configure</span><span class="p">(</span><span class="n">ADChannel</span><span class="p">,</span> <span class="n">ADSampleRate</span><span class="p">,</span> <span class="n">Gain</span><span class="p">,</span> <span class="n">DeviceHandle</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MPS060602.start"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Start card.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            DeviceStartFailed: Failed to start card.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__start_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">DeviceStartFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
@@ -181,6 +239,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Start</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MPS060602.data_in"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.data_in">[docs]</a>    <span class="k">def</span> <span class="nf">data_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">c_ushort</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Read ``sample_number`` of data, to ``MPS060602.buffer`` of this object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sample_number (int, optional): Sample number, when None is given, use buffer size. Defaults to None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            DataInFailed: Failed to run DataIn function in DLL.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Iterable[c_ushort]: A slice of internal data buffer, length is ``sample_umber``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sample_number</span><span class="p">:</span>
             <span class="n">sample_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
         <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
@@ -189,12 +258,30 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">sample_number</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="MPS060602.to_volt"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.to_volt">[docs]</a>    <span class="k">def</span> <span class="nf">to_volt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">c_ushort</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert internal ushort data to volt: (1 - (data / 65536) * 2) * volt_range</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (c_ushort): Internal ushort data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Voltage value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">volt_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">Gain</span><span class="o">.</span><span class="n">volt</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">data</span> <span class="o">/</span> <span class="mi">65536</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">volt_range</span></div>
 
 <div class="viewcode-block" id="MPS060602.read_to_volt"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.read_to_volt">[docs]</a>    <span class="k">def</span> <span class="nf">read_to_volt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Read ``sample_number`` of data, convert to voltage, and return </span>
+<span class="sd">        a immutable iterable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sample_number (int, optional): Sample number, when None is given,</span>
+<span class="sd">            use buffer size. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Iterable[float]: Immutable copy of data, converted to volt.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">(</span><span class="n">sample_number</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_volt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">buffer</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_volt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">buffer</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__data_in_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataBuffer</span><span class="p">,</span> <span class="n">SampleNumber</span><span class="p">,</span> <span class="n">DeviceHandle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">c_int</span><span class="p">:</span>
         <span class="c1"># TODO: async this.</span>
@@ -202,7 +289,15 @@
             <span class="k">raise</span> <span class="n">DeviceNotStarted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_DataIn</span><span class="p">(</span><span class="n">DataBuffer</span><span class="p">,</span> <span class="n">SampleNumber</span><span class="p">,</span> <span class="n">DeviceHandle</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MPS060602.stop"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MPS060602.suspend"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.suspend">[docs]</a>    <span class="k">def</span> <span class="nf">suspend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Suspend the board. During suspending, :func:`MPS060602.data_in`</span>
+<span class="sd">        cannot be called.</span>
+<span class="sd">        </span>
+<span class="sd">        Use :func:`MPS060602.start` to start it again.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            DeviceStopFailed: Failed to suspend the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__stop_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">DeviceStopFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
@@ -212,6 +307,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Stop</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MPS060602.close"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close the board.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            DeviceCloseFailed: Failed to close the device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__close_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">DeviceCloseFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
@@ -241,6 +341,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">MPS060602 Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/mps060602.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributions &amp; Help</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>

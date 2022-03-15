@@ -32,6 +32,7 @@ Contents
    Overview <readme>
    Installation Guide <installation>
    MPS060602 Tutorial <tutorial>
+   API <api/mps060602>
    Contributions & Help <contributing>
    License <license>
    Authors <authors>

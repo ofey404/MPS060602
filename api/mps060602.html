@@ -15,7 +15,8 @@
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="mps060602" href="modules.html" />
+    <link rel="next" title="Contributing" href="../contributing.html" />
+    <link rel="prev" title="MPS-060602 Tutorial" href="../tutorial.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -43,7 +44,14 @@
 <dt class="sig sig-object py" id="mps060602.core.ADChannelMode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">ADChannelMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#ADChannelMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.ADChannelMode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/enum.html#enum.IntEnum" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></a></p>
-<p>An enumeration.</p>
+<p>Mode to select input AD channel.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">in1_and_2</span></code> mode:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MPS060602.buffer[0::2]</span></code> are data from <code class="docutils literal notranslate"><span class="pre">In1</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MPS060602.buffer[1::2]</span></code> are data from <code class="docutils literal notranslate"><span class="pre">In2</span></code>.</p></li>
+</ul>
+<p>In <code class="docutils literal notranslate"><span class="pre">difference</span></code> mode, <a class="reference internal" href="#mps060602.core.MPS060602.data_in" title="mps060602.core.MPS060602.data_in"><code class="xref py py-func docutils literal notranslate"><span class="pre">MPS060602.data_in()</span></code></a> put
+voltage difference of <code class="docutils literal notranslate"><span class="pre">In1</span></code> and <code class="docutils literal notranslate"><span class="pre">In2</span></code> into buffer.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mps060602.core.ADChannelMode.difference">
 <span class="sig-name descname"><span class="pre">difference</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mps060602.core.ADChannelMode.difference" title="Permalink to this definition">¶</a></dt>
@@ -75,72 +83,125 @@
 <dt class="sig sig-object py" id="mps060602.core.MPS060602">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">MPS060602</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">para</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mps060602.core.MPS060602Para" title="mps060602.core.MPS060602Para"><span class="pre">mps060602.core.MPS060602Para</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="py class">
-<dt class="sig sig-object py" id="mps060602.core.MPS060602.Device">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/ctypes.html#ctypes.c_void_p" title="(in Python v3.10)"><span class="pre">ctypes.c_void_p</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.Device" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mps060602.core.MPS060602.Device.handle">
-<span class="sig-name descname"><span class="pre">handle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/ctypes.html#ctypes.c_void_p" title="(in Python v3.10)"><span class="pre">ctypes.c_void_p</span></a></em><a class="headerlink" href="#mps060602.core.MPS060602.Device.handle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mps060602.core.MPS060602.Device.number">
-<span class="sig-name descname"><span class="pre">number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#mps060602.core.MPS060602.Device.number" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="mps060602.core.MPS060602.InternalState">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InternalState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mps060602.core.MPS060602Para" title="mps060602.core.MPS060602Para"><span class="pre">mps060602.core.MPS060602Para</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">started</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.InternalState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.InternalState" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mps060602.core.MPS060602.InternalState.parameter">
-<span class="sig-name descname"><span class="pre">parameter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mps060602.core.MPS060602Para" title="mps060602.core.MPS060602Para"><span class="pre">mps060602.core.MPS060602Para</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mps060602.core.MPS060602.InternalState.parameter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mps060602.core.MPS060602.InternalState.started">
-<span class="sig-name descname"><span class="pre">started</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#mps060602.core.MPS060602.InternalState.started" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<p>Python wrapper for MPS060602 acquisition card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>para</strong> (<a class="reference internal" href="#mps060602.core.MPS060602Para" title="mps060602.core.MPS060602Para"><em>MPS060602Para</em></a>) – Configuration parameters for MPS060602 card.</p></li>
+<li><p><strong>device_number</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Device number of card, int in [0, 9]. Defaults to 0.</p></li>
+<li><p><strong>buffer_size</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Data buffer size for <a class="reference internal" href="#mps060602.core.MPS060602.data_in" title="mps060602.core.MPS060602.data_in"><code class="xref py py-func docutils literal notranslate"><span class="pre">MPS060602.data_in()</span></code></a>. Defaults to 1024.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#mps060602.errors.InvalidDeviceNumber" title="mps060602.errors.InvalidDeviceNumber"><strong>InvalidDeviceNumber</strong></a> – Given invliad <code class="docutils literal notranslate"><span class="pre">device_number</span></code>.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="mps060602.core.MPS060602.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.close" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Close the board.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mps060602.errors.DeviceCloseFailed" title="mps060602.errors.DeviceCloseFailed"><strong>DeviceCloseFailed</strong></a> – Failed to close the device</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mps060602.core.MPS060602.configure_and_update_state">
 <span class="sig-name descname"><span class="pre">configure_and_update_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">para</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mps060602.core.MPS060602Para" title="mps060602.core.MPS060602Para"><span class="pre">mps060602.core.MPS060602Para</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.configure_and_update_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.configure_and_update_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Configure MPS060602 card and update the internal object state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>para</strong> (<a class="reference internal" href="#mps060602.core.MPS060602Para" title="mps060602.core.MPS060602Para"><em>MPS060602Para</em></a>) – Parameters.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#mps060602.errors.ConfigureDeviceFailed" title="mps060602.errors.ConfigureDeviceFailed"><strong>ConfigureDeviceFailed</strong></a> – Failed to run configuration function.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mps060602.core.MPS060602.data_in">
 <span class="sig-name descname"><span class="pre">data_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/ctypes.html#ctypes.c_ushort" title="(in Python v3.10)"><span class="pre">ctypes.c_ushort</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.data_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.data_in" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Read <code class="docutils literal notranslate"><span class="pre">sample_number</span></code> of data, to <code class="docutils literal notranslate"><span class="pre">MPS060602.buffer</span></code> of this object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sample_number</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Sample number, when None is given, use buffer size. Defaults to None.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#mps060602.errors.DataInFailed" title="mps060602.errors.DataInFailed"><strong>DataInFailed</strong></a> – Failed to run DataIn function in DLL.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A slice of internal data buffer, length is <code class="docutils literal notranslate"><span class="pre">sample_umber</span></code>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Iterable[c_ushort]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mps060602.core.MPS060602.read_to_volt">
 <span class="sig-name descname"><span class="pre">read_to_volt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.read_to_volt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.read_to_volt" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Read <code class="docutils literal notranslate"><span class="pre">sample_number</span></code> of data, convert to voltage, and return
+a immutable iterable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_number</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Sample number, when None is given,</p></li>
+<li><p><strong>None.</strong> (<em>use buffer size. Defaults to</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Immutable copy of data, converted to volt.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Iterable[<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mps060602.core.MPS060602.start">
 <span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.start" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Start card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mps060602.errors.DeviceStartFailed" title="mps060602.errors.DeviceStartFailed"><strong>DeviceStartFailed</strong></a> – Failed to start card.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mps060602.core.MPS060602.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="mps060602.core.MPS060602.suspend">
+<span class="sig-name descname"><span class="pre">suspend</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.suspend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.suspend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Suspend the board. During suspending, <a class="reference internal" href="#mps060602.core.MPS060602.data_in" title="mps060602.core.MPS060602.data_in"><code class="xref py py-func docutils literal notranslate"><span class="pre">MPS060602.data_in()</span></code></a>
+cannot be called.</p>
+<p>Use <a class="reference internal" href="#mps060602.core.MPS060602.start" title="mps060602.core.MPS060602.start"><code class="xref py py-func docutils literal notranslate"><span class="pre">MPS060602.start()</span></code></a> to start it again.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mps060602.errors.DeviceStopFailed" title="mps060602.errors.DeviceStopFailed"><strong>DeviceStopFailed</strong></a> – Failed to suspend the device.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mps060602.core.MPS060602.to_volt">
 <span class="sig-name descname"><span class="pre">to_volt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/ctypes.html#ctypes.c_ushort" title="(in Python v3.10)"><span class="pre">ctypes.c_ushort</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602.to_volt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602.to_volt" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Convert internal ushort data to volt: (1 - (data / 65536) * 2) * volt_range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>c_ushort</em>) – Internal ushort data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Voltage value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -148,13 +209,38 @@
 <dt class="sig sig-object py" id="mps060602.core.MPS060602Para">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">MPS060602Para</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ADChannel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mps060602.core.ADChannelMode" title="mps060602.core.ADChannelMode"><span class="pre">mps060602.core.ADChannelMode</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">ADChannelMode.in1_and_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ADSampleRate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mps060602.core.PGAAmpRate" title="mps060602.core.PGAAmpRate"><span class="pre">mps060602.core.PGAAmpRate</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PGAAmpRate.range_10V</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#MPS060602Para"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.MPS060602Para" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Configuration parameters of MPS060602 acquisition card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ADChannel</strong> (<a class="reference internal" href="#mps060602.core.ADChannelMode" title="mps060602.core.ADChannelMode"><em>ADChannelMode</em></a><em>, </em><em>optional</em>) – Input AD channel mode.Defaults to ADChannelMode.in1_and_2.</p></li>
+<li><p><strong>ADSampleRate</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Sample rate, should be in [1000, 450000], rounded to closest 1000. Defaults to 1000.</p></li>
+<li><p><strong>Gain</strong> (<a class="reference internal" href="#mps060602.core.PGAAmpRate" title="mps060602.core.PGAAmpRate"><em>PGAAmpRate</em></a><em>, </em><em>optional</em>) – On board gain amplifier mode. Defaults to PGAAmpRate.range_10V.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#mps060602.errors.ADSampleRateOutOfRange" title="mps060602.errors.ADSampleRateOutOfRange"><strong>ADSampleRateOutOfRange</strong></a> – Given invalid AD sample rate.</p></li>
+<li><p><a class="reference internal" href="#mps060602.errors.ADSampleRateRoundToNearest1000" title="mps060602.errors.ADSampleRateRoundToNearest1000"><strong>ADSampleRateRoundToNearest1000</strong></a> – Given sample rate doesn’t round to 1000.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mps060602.core.PGAAmpRate">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mps060602.core.</span></span><span class="sig-name descname"><span class="pre">PGAAmpRate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mps060602/core.html#PGAAmpRate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mps060602.core.PGAAmpRate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/enum.html#enum.Enum" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
-<p>An enumeration.</p>
+<p>Information to control on board Programmable Gain Amplifier (PGA).</p>
+<p><code class="docutils literal notranslate"><span class="pre">range_10V</span> <span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">10)</span></code> (index, volt):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">index</span></code> would be passed to DLL function``MPS_Configure``, which is</p></li>
+</ul>
+<p>handled in <a class="reference internal" href="#mps060602.core.MPS060602.configure_and_update_state" title="mps060602.core.MPS060602.configure_and_update_state"><code class="xref py py-func docutils literal notranslate"><span class="pre">MPS060602.configure_and_update_state()</span></code></a>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">volt</span></code> is the corresponding volt range of the <code class="docutils literal notranslate"><span class="pre">index</span></code>, used to</p></li>
+</ul>
+<p>convert raw data to voltage in <a class="reference internal" href="#mps060602.core.MPS060602.to_volt" title="mps060602.core.MPS060602.to_volt"><code class="xref py py-func docutils literal notranslate"><span class="pre">MPS060602.to_volt()</span></code></a>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mps060602.core.PGAAmpRate.range_10V">
 <span class="sig-name descname"><span class="pre">range_10V</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">10)</span></em><a class="headerlink" href="#mps060602.core.PGAAmpRate.range_10V" title="Permalink to this definition">¶</a></dt>
@@ -363,23 +449,27 @@ also be used as template for Python modules.</p>
 <li class="toctree-l1"><a class="reference internal" href="../readme.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">MPS060602 Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mps060602.core">mps060602.core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mps060602.errors">mps060602.errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mps060602.skeleton">mps060602.skeleton module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mps060602">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributions &amp; Help</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Module Reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">mps060602 package</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Module Reference</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">mps060602</a><ul>
-      <li>Previous: <a href="modules.html" title="previous chapter">mps060602</a></li>
-  </ul></li>
+      <li>Previous: <a href="../tutorial.html" title="previous chapter">MPS-060602 Tutorial</a></li>
+      <li>Next: <a href="../contributing.html" title="next chapter">Contributing</a></li>
   </ul></li>
 </ul>
 </div>
