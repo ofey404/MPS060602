@@ -1,22 +1,25 @@
-from random import sample
 import matplotlib.pyplot as plt
 import time
 from mps060602 import MPS060602, MPS060602Para, ADChannelMode, PGAAmpRate
 
+""" Example Application - Waveform Peeker
 
-def main():
+    Visualize waveform in `buffer_size/sample_rate` seconds.
+    Use Channel In1 and range 10 volt.
+"""
+
+
+def main(buffer_size, sample_rate):
     # init
-    buffer_size = 2048
-    sample_rate = 10000
     para = MPS060602Para(
         ADChannel=ADChannelMode.in1,
         ADSampleRate=sample_rate,
         Gain=PGAAmpRate.range_10V,
     )
     card = MPS060602(device_number=0, para=para, buffer_size=buffer_size)
+    card.start()
 
     # read data
-    card.start()
     start = time.time()
     buffer = card.data_in()
     diff = time.time() - start
@@ -25,9 +28,8 @@ def main():
             buffer_size, diff, sample_rate
         )
     )
-    card.stop()
 
-    # plot
+    # preprocess
     x = [i / sample_rate for i in range(len(buffer))]
     y = list(map(card.to_volt, buffer))
 
@@ -41,8 +43,11 @@ def main():
     plt.show()
 
     # handle aftermath
+    card.suspend()
     card.close()
 
 
 if __name__ == "__main__":
-    main()
+    buffer_size = 2048
+    sample_rate = 10000
+    main(buffer_size, sample_rate)
