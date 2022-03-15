@@ -32,30 +32,36 @@
             
   <h1>Source code for mps060602.core</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">cdll</span><span class="p">,</span> <span class="n">sizeof</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">POINTER</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_ushort</span><span class="p">,</span> <span class="n">cdll</span><span class="p">,</span> <span class="n">sizeof</span>
 <span class="kn">from</span> <span class="nn">ctypes.wintypes</span> <span class="kn">import</span> <span class="n">HANDLE</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ADSampleRateOutOfRange</span><span class="p">,</span>
     <span class="n">ADSampleRateRoundToNearest1000</span><span class="p">,</span>
     <span class="n">ConfigureDeviceFailed</span><span class="p">,</span>
+    <span class="n">DataInFailed</span><span class="p">,</span>
+    <span class="n">DeviceCloseFailed</span><span class="p">,</span>
+    <span class="n">DeviceNotStarted</span><span class="p">,</span>
+    <span class="n">DeviceStartFailed</span><span class="p">,</span>
+    <span class="n">DeviceStopFailed</span><span class="p">,</span>
     <span class="n">InvalidDeviceNumber</span><span class="p">,</span>
     <span class="n">OpenDeviceFailed</span><span class="p">,</span>
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="is_os_64bit"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.is_os_64bit">[docs]</a><span class="k">def</span> <span class="nf">is_os_64bit</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;64&quot;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">_is_os_64bit</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;64&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="inpackage_dll_path"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.inpackage_dll_path">[docs]</a><span class="k">def</span> <span class="nf">inpackage_dll_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_inpackage_dll_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;MPS-060602.dll&quot;</span>
-    <span class="k">if</span> <span class="n">is_os_64bit</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">_is_os_64bit</span><span class="p">:</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;MPS-060602x64.dll&quot;</span>
-    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ADChannelMode"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.ADChannelMode">[docs]</a><span class="k">class</span> <span class="nc">ADChannelMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
@@ -66,28 +72,32 @@
     <span class="n">difference</span> <span class="o">=</span> <span class="mi">4</span></div>
 
 
-<div class="viewcode-block" id="PGAAmpRate"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.PGAAmpRate">[docs]</a><span class="k">class</span> <span class="nc">PGAAmpRate</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
-    <span class="n">range_10V</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">range_5V</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">range_2V</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">range_1v</span> <span class="o">=</span> <span class="mi">3</span></div>
+<div class="viewcode-block" id="PGAAmpRate"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.PGAAmpRate">[docs]</a><span class="k">class</span> <span class="nc">PGAAmpRate</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">range_10V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># (index, volt)</span>
+    <span class="n">range_5V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">range_2V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">range_1v</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">volt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volt</span> <span class="o">=</span> <span class="n">volt</span></div>
 
 
-<div class="viewcode-block" id="ADSampleRate"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.ADSampleRate">[docs]</a><span class="k">class</span> <span class="nc">ADSampleRate</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">allow_not_allign_to_1000</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">int_rate</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rate</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">int_rate</span> <span class="o">&lt;</span> <span class="mi">1000</span> <span class="ow">or</span> <span class="n">int_rate</span> <span class="o">&gt;</span> <span class="mi">450000</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ADSampleRateOutOfRange</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_not_allign_to_1000</span> <span class="ow">and</span> <span class="n">int_rate</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ADSampleRateRoundToNearest1000</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">int_rate</span></div>
+<div class="viewcode-block" id="MPS060602Para"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602Para">[docs]</a><span class="k">class</span> <span class="nc">MPS060602Para</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ADChannel</span><span class="p">:</span> <span class="n">ADChannelMode</span> <span class="o">=</span> <span class="n">ADChannelMode</span><span class="o">.</span><span class="n">in1_and_2</span><span class="p">,</span>
+        <span class="n">ADSampleRate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">Gain</span><span class="p">:</span> <span class="n">PGAAmpRate</span> <span class="o">=</span> <span class="n">PGAAmpRate</span><span class="o">.</span><span class="n">range_10V</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ADChannel</span><span class="p">:</span> <span class="n">ADChannelMode</span> <span class="o">=</span> <span class="n">ADChannel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gain</span><span class="p">:</span> <span class="n">PGAAmpRate</span> <span class="o">=</span> <span class="n">Gain</span>
 
-
-<div class="viewcode-block" id="MPS060602Para"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602Para">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">MPS060602Para</span><span class="p">:</span>
-    <span class="n">ADChannel</span><span class="p">:</span> <span class="n">ADChannelMode</span> <span class="o">=</span> <span class="n">ADChannelMode</span><span class="o">.</span><span class="n">in1_and_2</span>
-    <span class="n">ADSampleRate</span><span class="p">:</span> <span class="n">ADSampleRate</span> <span class="o">=</span> <span class="n">ADSampleRate</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-    <span class="n">Gain</span><span class="p">:</span> <span class="n">PGAAmpRate</span> <span class="o">=</span> <span class="n">PGAAmpRate</span><span class="o">.</span><span class="n">range_10V</span></div>
+        <span class="k">if</span> <span class="n">ADSampleRate</span> <span class="o">&lt;</span> <span class="mi">1000</span> <span class="ow">or</span> <span class="n">ADSampleRate</span> <span class="o">&gt;</span> <span class="mi">450000</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ADSampleRateOutOfRange</span><span class="p">(</span><span class="n">ADSampleRate</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ADSampleRate</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ADSampleRateRoundToNearest1000</span><span class="p">(</span><span class="n">ADSampleRate</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ADSampleRate</span> <span class="o">=</span> <span class="n">ADSampleRate</span></div>
 
 
 <div class="viewcode-block" id="MPS060602"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602">[docs]</a><span class="k">class</span> <span class="nc">MPS060602</span><span class="p">:</span>
@@ -96,43 +106,119 @@
         <span class="n">handle</span><span class="p">:</span> <span class="n">HANDLE</span>
         <span class="n">number</span><span class="p">:</span> <span class="nb">int</span></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="MPS060602.InternalState"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.InternalState">[docs]</a>    <span class="nd">@dataclass</span>
+    <span class="k">class</span> <span class="nc">InternalState</span><span class="p">:</span>
+        <span class="n">parameter</span><span class="p">:</span> <span class="n">MPS060602Para</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">started</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">para</span><span class="p">:</span> <span class="n">MPS060602Para</span><span class="p">,</span> <span class="n">device_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">buffer_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">invalid</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dn</span><span class="p">:</span> <span class="n">dn</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">dn</span> <span class="o">&gt;</span> <span class="mi">9</span>
         <span class="k">if</span> <span class="n">invalid</span><span class="p">(</span><span class="n">device_number</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidDeviceNumber</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="n">inpackage_dll_path</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="n">_inpackage_dll_path</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__init_dll_wrappers</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__open_device</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_ushort</span> <span class="o">*</span> <span class="n">buffer_size</span><span class="p">)()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">InternalState</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configure_and_update_state</span><span class="p">(</span><span class="n">para</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init_dll_wrappers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO: Refactor with self.dll.__getitem__()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_OpenDevice</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_int</span><span class="p">,)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_OpenDevice</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">HANDLE</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Configure</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">HANDLE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Configure</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Start</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">HANDLE</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Start</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_DataIn</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">POINTER</span><span class="p">(</span><span class="n">c_ushort</span><span class="p">),</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">HANDLE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_DataIn</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Stop</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">HANDLE</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Stop</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_CloseDevice</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">HANDLE</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_CloseDevice</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int</span>
+
     <span class="k">def</span> <span class="nf">__open_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Device</span><span class="p">:</span>
         <span class="n">all_bit_1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sizeof</span><span class="p">(</span><span class="n">HANDLE</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)])</span>
         <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">handle</span><span class="p">:</span> <span class="n">handle</span> <span class="o">==</span> <span class="n">all_bit_1</span>
+
         <span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_OpenDevice</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="n">handle</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">OpenDeviceFailed</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Device</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">device_number</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MPS060602.configure"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para</span><span class="p">:</span> <span class="n">MPS060602Para</span><span class="p">):</span>
+<div class="viewcode-block" id="MPS060602.configure_and_update_state"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.configure_and_update_state">[docs]</a>    <span class="k">def</span> <span class="nf">configure_and_update_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para</span><span class="p">:</span> <span class="n">MPS060602Para</span><span class="p">):</span>
         <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__configure_raw</span><span class="p">(</span>
                 <span class="n">para</span><span class="o">.</span><span class="n">ADChannel</span><span class="p">,</span>
                 <span class="n">para</span><span class="o">.</span><span class="n">ADSampleRate</span><span class="p">,</span>
-                <span class="n">para</span><span class="o">.</span><span class="n">Gain</span><span class="p">,</span>
+                <span class="n">para</span><span class="o">.</span><span class="n">Gain</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ConfigureDeviceFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">ConfigureDeviceFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">parameter</span> <span class="o">=</span> <span class="n">para</span></div>
 
-    <span class="k">def</span> <span class="nf">__configure_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ADChannel</span><span class="p">,</span> <span class="n">ADSampleRate</span><span class="p">,</span> <span class="n">Gain</span><span class="p">,</span> <span class="n">DeviceHandle</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Configure</span><span class="p">(</span><span class="n">ADChannel</span><span class="p">,</span> <span class="n">ADSampleRate</span><span class="p">,</span> <span class="n">Gain</span><span class="p">,</span> <span class="n">DeviceHandle</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">__configure_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ADChannel</span><span class="p">,</span> <span class="n">ADSampleRate</span><span class="p">,</span> <span class="n">Gain</span><span class="p">,</span> <span class="n">DeviceHandle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">c_int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Configure</span><span class="p">(</span><span class="n">ADChannel</span><span class="p">,</span> <span class="n">ADSampleRate</span><span class="p">,</span> <span class="n">Gain</span><span class="p">,</span> <span class="n">DeviceHandle</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MPS060602.start"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__start_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">DeviceStartFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="k">def</span> <span class="nf">__start_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">:</span> <span class="n">HANDLE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">c_int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Start</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MPS060602.data_in"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.data_in">[docs]</a>    <span class="k">def</span> <span class="nf">data_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">c_ushort</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sample_number</span><span class="p">:</span>
+            <span class="n">sample_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data_in_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span> <span class="n">sample_number</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">DataInFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">sample_number</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="MPS060602.to_volt"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.to_volt">[docs]</a>    <span class="k">def</span> <span class="nf">to_volt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">c_ushort</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">volt_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">Gain</span><span class="o">.</span><span class="n">volt</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">data</span> <span class="o">/</span> <span class="mi">65536</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">volt_range</span></div>
+
+<div class="viewcode-block" id="MPS060602.read_to_volt"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.read_to_volt">[docs]</a>    <span class="k">def</span> <span class="nf">read_to_volt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="n">buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_in</span><span class="p">(</span><span class="n">sample_number</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_volt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">buffer</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__data_in_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataBuffer</span><span class="p">,</span> <span class="n">SampleNumber</span><span class="p">,</span> <span class="n">DeviceHandle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">c_int</span><span class="p">:</span>
+        <span class="c1"># TODO: async this.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">started</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceNotStarted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_DataIn</span><span class="p">(</span><span class="n">DataBuffer</span><span class="p">,</span> <span class="n">SampleNumber</span><span class="p">,</span> <span class="n">DeviceHandle</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MPS060602.stop"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__stop_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">DeviceStopFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+    <span class="k">def</span> <span class="nf">__stop_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">:</span> <span class="n">HANDLE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">c_int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_Stop</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MPS060602.close"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__close_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">DeviceCloseFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+    <span class="k">def</span> <span class="nf">__close_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">:</span> <span class="n">HANDLE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">c_int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_CloseDevice</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
