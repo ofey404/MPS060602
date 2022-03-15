@@ -2,7 +2,7 @@ from ctypes import *
 from ctypes.wintypes import *
 
 import pytest
-from mps060602 import MPS060602, ADSampleRate
+from mps060602 import MPS060602
 from mps060602.core import MPS060602Para
 from mps060602.errors import (
     ADSampleRateOutOfRange,
@@ -24,49 +24,46 @@ unplugged = False
 
 def test_MPS():
     """API Tests"""
-    m = MPS060602()
+    MPS060602(MPS060602Para())
 
 
-def test_ADSampleRate():
-    assert ADSampleRate(1000) == 1000, "ADSampleRate should interoperate with int"
-
+def test_MPS060602Para():
     with raises(ADSampleRateOutOfRange):
-        ADSampleRate(-1)
+        MPS060602Para(ADSampleRate=-1)
     with raises(ADSampleRateOutOfRange):
-        ADSampleRate(450001)
-
+        MPS060602Para(ADSampleRate=450001)
     with raises(ADSampleRateRoundToNearest1000):
-        ADSampleRate(449999)
-
-    assert ADSampleRate(449999, allow_not_allign_to_1000=True) == 449999
+        MPS060602Para(ADSampleRate=449999)
 
 
 def MPS060602_init_plugged():
+    para = MPS060602Para()
     with raises(InvalidDeviceNumber):
-        MPS060602(-1)
+        MPS060602(para, device_number=-1)
     with raises(InvalidDeviceNumber):
-        MPS060602(11)
-    MPS060602(0)
+        MPS060602(para, device_number=-1)
+    MPS060602(para, device_number=0)
 
 
 def MPS060602_init_unplugged():
     with raises(OpenDeviceFailed):
-        m = MPS060602(0)
+        MPS060602(MPS060602Para(), device_number=0)
 
 
 def MPS060602_configure():
-    card = MPS060602(0)
+    para = MPS060602Para()
+    card = MPS060602(para, device_number=0)
     card.device.handle = -1  # Hack: Pollute the handle.
     with raises(ConfigureDeviceFailed):
-        card.configure(MPS060602Para())
+        card.configure_and_update_state(MPS060602Para())
 
-    card = MPS060602(0)
-    card.configure(MPS060602Para())
+    card = MPS060602(para, device_number=0)
+    card.configure_and_update_state(MPS060602Para())
 
 
-def test_on_plug_status():
+def test_by_plug_status():
     if unplugged:
         MPS060602_init_unplugged()
-    else:
-        MPS060602_init_plugged()
-        MPS060602_configure()
+        return
+    MPS060602_init_plugged()
+    MPS060602_configure()
