@@ -18,7 +18,7 @@ if __name__ == "__main__":
             )
             raise
         setup(
-            # use_scm_version=True,
+            use_scm_version=True,
             version="0.0.1",
             author="Ofey Chan",
             author_email="ofey206@gmail.com",
