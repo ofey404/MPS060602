@@ -18,13 +18,12 @@ if __name__ == "__main__":
             )
             raise
         setup(
-            use_scm_version={"version_scheme": "no-guess-dev"},
-            version="0.0.1",
+            use_scm_version=True,
+            version="0.1",
             author="Weiwen Chen",
             author_email="ofey206@gmail.com",
             license="MIT",
             install_requires=["dataclasses"],
-            platform="Windows",
         )
     except:  # noqa
         print(
