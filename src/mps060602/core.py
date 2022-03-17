@@ -23,12 +23,14 @@ from .errors import (
 def _is_os_64bit() -> bool:
     return platform.machine().endswith("64")
 
+def static_file_path() -> Path:
+    return Path(__file__).parent / "static" 
 
 def _inpackage_dll_path() -> str:
     filename = "MPS-060602.dll"
     if _is_os_64bit:
         filename = "MPS-060602x64.dll"
-    return str(Path(__file__).parent / "static" / filename)
+    return str(static_file_path() / filename)
 
 
 class ADChannelMode(IntEnum):

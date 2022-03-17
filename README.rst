@@ -35,7 +35,7 @@ MPS060602
 
 MPS-060602 is a Dual Channel, 16 Bit High Speed IEPE
 Vibration ICP Acquisition Card, with USB Support and
-LabVIEW Software.
+LabVIEW Software. `Documentation <https://ofey404.github.io/MPS060602/>`_.
 
 WARNING: This package is a wrapper of its DLL, only working on
 Windows.

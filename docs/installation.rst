@@ -16,15 +16,28 @@ It should work fine with all python version above 3.6.
 Installing MPS060602 Package
 ----------------------------
 
-TODO: pip
+This package currently hosted `on test.pypi.org <https://test.pypi.org/project/MPS060602/>`_.
 
-Install drivers: 
+.. code:: bash
+
+    python -m pip install -i https://test.pypi.org/simple/ MPS060602
+
+Driver included, you can quickly find them with following command:
+
+.. code:: python
+
+    import mps060602
+    mps060602.core.static_file_path()
+    # Like this: WindowsPath('c:/users/.../mps060603/static')
+
+Install drivers 
 
 1. Control panel - device manager - MPS 16bit IEPE
    Data Acquisition - Update Driver.
-2. TODO: Install driver attached in MPS060602 package.
-3. Check :download:`User Guide V1.0 (Chinese) <_static/MPS-060602UserGuideChineseV1.0.pdf>`
-   for more details.
+2. Install the driver under `static/driver` directory.
+   Check :download:`User Guide V1.0 (Chinese) <_static/MPS-060602UserGuideChineseV1.0.pdf>`
+   if needed.
+   
 
 -------------------------
 Check Waveform Generator
@@ -59,3 +72,14 @@ And use MPS-060602 Data Acquisition V2.0.exe to observe the waveform:
 .. image:: _static/labview-interface.jpg
     :width: 75%
 
+
+-----------------------
+Run Example Application
+-----------------------
+
+There are some example applications under `example directory <https://github.com/ofey404/MPS060602/tree/main/examples>`_.
+
+* voltmeter.py
+* waveform_peeker.py
+
+TODO: Under construction
