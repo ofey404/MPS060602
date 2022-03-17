@@ -42,14 +42,23 @@
 </section>
 <section id="installing-mps060602-package">
 <h2>Installing MPS060602 Package<a class="headerlink" href="#installing-mps060602-package" title="Permalink to this headline">¶</a></h2>
-<p>TODO: pip</p>
-<p>Install drivers:</p>
+<p>This package currently hosted <a class="reference external" href="https://test.pypi.org/project/MPS060602/">on test.pypi.org</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip install -i https://test.pypi.org/simple/ MPS060602
+</pre></div>
+</div>
+<p>Driver included, you can quickly find them with following command:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mps060602</span>
+<span class="n">mps060602</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">static_file_path</span><span class="p">()</span>
+<span class="c1"># Like this: WindowsPath(&#39;c:/users/.../mps060603/static&#39;)</span>
+</pre></div>
+</div>
+<p>Install drivers</p>
 <ol class="arabic simple">
 <li><p>Control panel - device manager - MPS 16bit IEPE
 Data Acquisition - Update Driver.</p></li>
-<li><p>TODO: Install driver attached in MPS060602 package.</p></li>
-<li><p>Check <a class="reference download internal" download="" href="_downloads/86705e6c3203391bad7e951ad6910c30/MPS-060602UserGuideChineseV1.0.pdf"><code class="xref download docutils literal notranslate"><span class="pre">User</span> <span class="pre">Guide</span> <span class="pre">V1.0</span> <span class="pre">(Chinese)</span></code></a>
-for more details.</p></li>
+<li><p>Install the driver under <cite>static/driver</cite> directory.
+Check <a class="reference download internal" download="" href="_downloads/86705e6c3203391bad7e951ad6910c30/MPS-060602UserGuideChineseV1.0.pdf"><code class="xref download docutils literal notranslate"><span class="pre">User</span> <span class="pre">Guide</span> <span class="pre">V1.0</span> <span class="pre">(Chinese)</span></code></a>
+if needed.</p></li>
 </ol>
 </section>
 <section id="check-waveform-generator">
@@ -70,6 +79,15 @@ to ensure our acquisition card working correctly.</p>
 <a class="reference internal image-reference" href="_images/card-to-wave-generator.jpg"><img alt="_images/card-to-wave-generator.jpg" src="_images/card-to-wave-generator.jpg" style="width: 75%;" /></a>
 <p>And use MPS-060602 Data Acquisition V2.0.exe to observe the waveform:</p>
 <a class="reference internal image-reference" href="_images/labview-interface.jpg"><img alt="_images/labview-interface.jpg" src="_images/labview-interface.jpg" style="width: 75%;" /></a>
+</section>
+<section id="run-example-application">
+<h2>Run Example Application<a class="headerlink" href="#run-example-application" title="Permalink to this headline">¶</a></h2>
+<p>There are some example applications under <a class="reference external" href="https://github.com/ofey404/MPS060602/tree/main/examples">example directory</a>.</p>
+<ul class="simple">
+<li><p>voltmeter.py</p></li>
+<li><p>waveform_peeker.py</p></li>
+</ul>
+<p>TODO: Under construction</p>
 </section>
 </section>
 
@@ -97,6 +115,7 @@ to ensure our acquisition card working correctly.</p>
 <li class="toctree-l2"><a class="reference internal" href="#installing-mps060602-package">Installing MPS060602 Package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-waveform-generator">Check Waveform Generator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-acquisition-card">Check Acquisition Card</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-example-application">Run Example Application</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">MPS060602 Tutorial</a></li>

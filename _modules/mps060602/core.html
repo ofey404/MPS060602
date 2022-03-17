@@ -56,12 +56,14 @@
 <span class="k">def</span> <span class="nf">_is_os_64bit</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;64&quot;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="static_file_path"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.static_file_path">[docs]</a><span class="k">def</span> <span class="nf">static_file_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> </div>
 
 <span class="k">def</span> <span class="nf">_inpackage_dll_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;MPS-060602.dll&quot;</span>
     <span class="k">if</span> <span class="n">_is_os_64bit</span><span class="p">:</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;MPS-060602x64.dll&quot;</span>
-    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">static_file_path</span><span class="p">()</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ADChannelMode"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.ADChannelMode">[docs]</a><span class="k">class</span> <span class="nc">ADChannelMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
