@@ -18,7 +18,7 @@ if __name__ == "__main__":
             )
             raise
         setup(
-            version="0.0.1",
+            use_scm_version={"version_scheme": "no-guess-dev"},
             author="Ofey Chan",
             author_email="ofey206@gmail.com",
             license="MIT",
