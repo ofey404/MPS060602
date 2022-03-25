@@ -2,9 +2,13 @@
 Changelog
 =========
 
+Version 0.2
+===========
+
+- Fix: use right scm version.
+- Example application: voltmeter.py
+
 Version 0.1
 ===========
 
-- Feature A added
-- FIX: nasty bug #1729 fixed
-- add your changes here!
+- Basic MPS-060602 control function added.

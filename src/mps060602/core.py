@@ -204,6 +204,14 @@ class MPS060602:
             raise DeviceStartFailed(self.device.number)
         self.state.started = True
 
+    def resize_buffer(self, size: int):
+        """Resize internal buffer
+
+        Args:
+            size (int): new buffer size.
+        """
+        self.buffer = (c_ushort * size)()
+
     def __start_raw(self, handle: HANDLE) -> c_int:
         return self.dll.MPS_Start(handle)
 
