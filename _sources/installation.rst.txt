@@ -4,13 +4,19 @@
 Installation Guide
 ==================
 
+------------------------------
+Manual and Supporting Material
+------------------------------
+
+* Manual (Chinese): :download:`MPS-060602 Data Acquisition V2.0 软件使用说明<_static/MPS-060602 Data Acquisition V2.0/MPS-060602 Data Acquisition V2.0 软件使用说明.pdf>`.
+* Example applications under `example/ directory <https://github.com/ofey404/MPS060602/tree/main/examples>`_.
+* `API Documentation <api/modules>`_.
+
 -------------------------
 Supported Python Versions
 -------------------------
 
-MPS060602 package is developed under python 3.6.
-
-It should work fine with all python version above 3.6.
+MPS060602 package is developed under python 3.6, should work fine with all python version above.
 
 ----------------------------
 Installing MPS060602 Package
@@ -60,8 +66,6 @@ If we have labview 7.1+ installed, we can use
 :download:`MPS-060602 Data Acquisition V2.0.exe <_static/MPS-060602 Data Acquisition V2.0/MPS-060602 Data Acquisition V2.0.exe>`
 to ensure our acquisition card working correctly.
 
-:download:`Manual (Chinese) <_static/MPS-060602 Data Acquisition V2.0/MPS-060602 Data Acquisition V2.0 软件使用说明.pdf>`
-
 Wire MPS-060602 and waveform generator together:
 
 .. image:: _static/card-to-wave-generator.jpg
@@ -82,4 +86,4 @@ There are some example applications under `example directory <https://github.com
 * voltmeter.py
 * waveform_peeker.py
 
-TODO: Under construction
+Read `MPS060602 Tutorial <tutorial>`_ for more information.
