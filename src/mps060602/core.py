@@ -67,7 +67,7 @@ class PGAAmpRate(Enum):
     range_10V = (0, 10)
     range_5V = (1, 5)
     range_2V = (2, 2)
-    range_1v = (3, 1)
+    range_1V = (3, 1)
 
     def __init__(self, index, volt) -> None:
         self.index = index
@@ -227,12 +227,16 @@ class MPS060602:
         Returns:
             Iterable[c_ushort]: A slice of internal data buffer, length is ``sample_umber``.
         """
-        if not sample_number:
-            sample_number = len(self.buffer)
-        failed = lambda res: res == 0
-        if failed(self.__data_in_raw(self.buffer, sample_number, self.device.handle)):
-            raise DataInFailed(self.device.number)
+        self._data_into_buffer(self.buffer, sample_number)
         return self.buffer[0:sample_number]
+
+    def _data_into_buffer(self, buffer, sample_number: int = None) -> None:
+        if not sample_number:
+            sample_number = len(buffer)
+        failed = lambda res: res == 0
+        if failed(self.__data_in_raw(buffer, sample_number, self.device.handle)):
+            raise DataInFailed(self.device.number)
+        
 
     def to_volt(self, data: c_ushort) -> float:
         """Convert internal ushort data to volt: (1 - (data / 65536) * 2) * volt_range

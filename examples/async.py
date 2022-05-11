@@ -21,18 +21,32 @@ def new_card():
     return card
 
 
+
+
+async def async_read_to_volt(card: MPS060602):
+    async def sleep():
+        await asyncio.sleep(1)
+
+    async def read_to_volt(card: MPS060602):
+        await card.read_to_volt()
+
+    with Timer(text="\n asynchorounous `sleep(1); read_to_volt()` elapsed time: {:.1f}"):
+        tasks = [sleep(), read_to_volt(card)]
+        await asyncio.gather(*tasks)
+
 def sync_read_to_volt(card: MPS060602):
     with Timer(text="\n synchrounous `sleep(1); read_to_volt()` elapsed time: {:.1f}"):
         time.sleep(1)
         card.read_to_volt()
 
 
-async def main(loop):
+async def main():
     card = new_card()
     sync_read_to_volt(card)
+    await async_read_to_volt(card)
 
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(loop))
+    loop.run_until_complete(main())
     loop.close()
