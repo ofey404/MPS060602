@@ -23,8 +23,10 @@ from .errors import (
 def _is_os_64bit() -> bool:
     return platform.machine().endswith("64")
 
+
 def static_file_path() -> Path:
-    return Path(__file__).parent / "static" 
+    return Path(__file__).parent / "static"
+
 
 def _inpackage_dll_path() -> str:
     filename = "MPS-060602.dll"
@@ -52,7 +54,16 @@ class ADChannelMode(IntEnum):
     difference = 4
 
 
-class PGAAmpRate(Enum):
+class AmpRate:
+    def __init__(self, index, volt, correct_factor) -> None:
+        self.index = index
+        self.volt = volt
+
+        # FIXME: fix weird behavior in range...
+        #        to_volt() still uses formula in the documentation.
+        self.correct_factor = correct_factor
+
+class PGAAmpRate():
     """Information to control on board Programmable Gain Amplifier (PGA).
 
     ``range_10V = (0, 10)`` (index, volt):
@@ -64,14 +75,11 @@ class PGAAmpRate(Enum):
     convert raw data to voltage in :func:`MPS060602.to_volt`.
     """
 
-    range_10V = (0, 10)
-    range_5V = (1, 5)
-    range_2V = (2, 2)
-    range_1V = (3, 1)
+    range_10V = AmpRate(0, 10, 2)
+    range_5V = AmpRate(1, 5, 1)
+    range_2V = AmpRate(2, 2, 0.4)
+    range_1V = AmpRate(3, 1, 0.2)
 
-    def __init__(self, index, volt) -> None:
-        self.index = index
-        self.volt = volt
 
 
 class MPS060602Para:
@@ -94,7 +102,7 @@ class MPS060602Para:
         Gain: PGAAmpRate = PGAAmpRate.range_10V,
     ) -> None:
         self.ADChannel: ADChannelMode = ADChannel
-        self.Gain: PGAAmpRate = Gain
+        self.Gain: AmpRate = Gain
 
         if ADSampleRate < 1000 or ADSampleRate > 450000:
             raise ADSampleRateOutOfRange(ADSampleRate)
@@ -128,7 +136,7 @@ class MPS060602:
     def __init__(
         self, para: MPS060602Para, device_number: int = 0, buffer_size: int = 1024
     ) -> None:
-        invalid = lambda dn: dn < 0 or dn > 9
+        def invalid(dn): return dn < 0 or dn > 9
         if invalid(device_number):
             raise InvalidDeviceNumber(device_number)
 
@@ -138,7 +146,7 @@ class MPS060602:
         self.device = self.__open_device(device_number)
         self.buffer = (c_ushort * buffer_size)()
         self.state = self.__InternalState()
-        self.configure_and_update_state(para)
+        self.configure(para)
 
     def __init_dll_wrappers(self):
         # TODO: Refactor with self.dll.__getitem__()
@@ -162,14 +170,14 @@ class MPS060602:
 
     def __open_device(self, device_number: int) -> __Device:
         all_bit_1 = sum([1 << i for i in range(sizeof(HANDLE) * 8)])
-        failed = lambda handle: handle == all_bit_1
+        def failed(handle): return handle == all_bit_1
 
         handle = self.dll.MPS_OpenDevice(device_number)
         if failed(handle):
             raise OpenDeviceFailed(device_number)
         return self.__Device(handle, device_number)
 
-    def configure_and_update_state(self, para: MPS060602Para):
+    def configure(self, para: MPS060602Para):
         """Configure MPS060602 card and update the internal object state.
 
         Args:
@@ -178,7 +186,7 @@ class MPS060602:
         Raises:
             ConfigureDeviceFailed: Failed to run configuration function.
         """
-        failed = lambda res: res == 0
+        def failed(res): return res == 0
         if failed(
             self.__configure_raw(
                 para.ADChannel,
@@ -199,7 +207,7 @@ class MPS060602:
         Raises:
             DeviceStartFailed: Failed to start card.
         """
-        failed = lambda res: res == 0
+        def failed(res): return res == 0
         if failed(self.__start_raw(self.device.handle)):
             raise DeviceStartFailed(self.device.number)
         self.state.started = True
@@ -233,10 +241,10 @@ class MPS060602:
     def _data_into_buffer(self, buffer, sample_number: int = None) -> None:
         if not sample_number:
             sample_number = len(buffer)
-        failed = lambda res: res == 0
+
+        def failed(res): return res == 0
         if failed(self.__data_in_raw(buffer, sample_number, self.device.handle)):
             raise DataInFailed(self.device.number)
-        
 
     def to_volt(self, data: c_ushort) -> float:
         """Convert internal ushort data to volt: (1 - (data / 65536) * 2) * volt_range
@@ -273,13 +281,13 @@ class MPS060602:
     def suspend(self):
         """Suspend the board. During suspending, :func:`MPS060602.data_in`
         cannot be called.
-        
+
         Use :func:`MPS060602.start` to start it again.
 
         Raises:
             DeviceStopFailed: Failed to suspend the device.
         """
-        failed = lambda res: res == 0
+        def failed(res): return res == 0
         if failed(self.__stop_raw(self.device.handle)):
             raise DeviceStopFailed(self.device.number)
         self.state.started = False
@@ -293,7 +301,7 @@ class MPS060602:
         Raises:
             DeviceCloseFailed: Failed to close the device
         """
-        failed = lambda res: res == 0
+        def failed(res): return res == 0
         if failed(self.__close_raw(self.device.handle)):
             raise DeviceCloseFailed(self.device.number)
         self.state.started = False
