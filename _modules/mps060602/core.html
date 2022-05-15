@@ -56,8 +56,10 @@
 <span class="k">def</span> <span class="nf">_is_os_64bit</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;64&quot;</span><span class="p">)</span>
 
+
 <div class="viewcode-block" id="static_file_path"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.static_file_path">[docs]</a><span class="k">def</span> <span class="nf">static_file_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> </div>
+    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span></div>
+
 
 <span class="k">def</span> <span class="nf">_inpackage_dll_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;MPS-060602.dll&quot;</span>
@@ -85,7 +87,16 @@
     <span class="n">difference</span> <span class="o">=</span> <span class="mi">4</span></div>
 
 
-<div class="viewcode-block" id="PGAAmpRate"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.PGAAmpRate">[docs]</a><span class="k">class</span> <span class="nc">PGAAmpRate</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="AmpRate"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.AmpRate">[docs]</a><span class="k">class</span> <span class="nc">AmpRate</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">volt</span><span class="p">,</span> <span class="n">correct_factor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volt</span> <span class="o">=</span> <span class="n">volt</span>
+
+        <span class="c1"># FIXME: fix weird behavior in range...</span>
+        <span class="c1">#        to_volt() still uses formula in the documentation.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correct_factor</span> <span class="o">=</span> <span class="n">correct_factor</span></div>
+
+<div class="viewcode-block" id="PGAAmpRate"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.PGAAmpRate">[docs]</a><span class="k">class</span> <span class="nc">PGAAmpRate</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Information to control on board Programmable Gain Amplifier (PGA).</span>
 
 <span class="sd">    ``range_10V = (0, 10)`` (index, volt):</span>
@@ -97,14 +108,11 @@
 <span class="sd">    convert raw data to voltage in :func:`MPS060602.to_volt`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">range_10V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-    <span class="n">range_5V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-    <span class="n">range_2V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">range_1V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">range_10V</span> <span class="o">=</span> <span class="n">AmpRate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">range_5V</span> <span class="o">=</span> <span class="n">AmpRate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">range_2V</span> <span class="o">=</span> <span class="n">AmpRate</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">range_1V</span> <span class="o">=</span> <span class="n">AmpRate</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">volt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">volt</span> <span class="o">=</span> <span class="n">volt</span></div>
 
 
 <div class="viewcode-block" id="MPS060602Para"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602Para">[docs]</a><span class="k">class</span> <span class="nc">MPS060602Para</span><span class="p">:</span>
@@ -127,7 +135,7 @@
         <span class="n">Gain</span><span class="p">:</span> <span class="n">PGAAmpRate</span> <span class="o">=</span> <span class="n">PGAAmpRate</span><span class="o">.</span><span class="n">range_10V</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ADChannel</span><span class="p">:</span> <span class="n">ADChannelMode</span> <span class="o">=</span> <span class="n">ADChannel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Gain</span><span class="p">:</span> <span class="n">PGAAmpRate</span> <span class="o">=</span> <span class="n">Gain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gain</span><span class="p">:</span> <span class="n">AmpRate</span> <span class="o">=</span> <span class="n">Gain</span>
 
         <span class="k">if</span> <span class="n">ADSampleRate</span> <span class="o">&lt;</span> <span class="mi">1000</span> <span class="ow">or</span> <span class="n">ADSampleRate</span> <span class="o">&gt;</span> <span class="mi">450000</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ADSampleRateOutOfRange</span><span class="p">(</span><span class="n">ADSampleRate</span><span class="p">)</span>
@@ -161,7 +169,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">para</span><span class="p">:</span> <span class="n">MPS060602Para</span><span class="p">,</span> <span class="n">device_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">buffer_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">invalid</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dn</span><span class="p">:</span> <span class="n">dn</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">dn</span> <span class="o">&gt;</span> <span class="mi">9</span>
+        <span class="k">def</span> <span class="nf">invalid</span><span class="p">(</span><span class="n">dn</span><span class="p">):</span> <span class="k">return</span> <span class="n">dn</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">dn</span> <span class="o">&gt;</span> <span class="mi">9</span>
         <span class="k">if</span> <span class="n">invalid</span><span class="p">(</span><span class="n">device_number</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidDeviceNumber</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
 
@@ -171,7 +179,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__open_device</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_ushort</span> <span class="o">*</span> <span class="n">buffer_size</span><span class="p">)()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__InternalState</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">configure_and_update_state</span><span class="p">(</span><span class="n">para</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">para</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init_dll_wrappers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TODO: Refactor with self.dll.__getitem__()</span>
@@ -195,14 +203,14 @@
 
     <span class="k">def</span> <span class="nf">__open_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">__Device</span><span class="p">:</span>
         <span class="n">all_bit_1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sizeof</span><span class="p">(</span><span class="n">HANDLE</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)])</span>
-        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">handle</span><span class="p">:</span> <span class="n">handle</span> <span class="o">==</span> <span class="n">all_bit_1</span>
+        <span class="k">def</span> <span class="nf">failed</span><span class="p">(</span><span class="n">handle</span><span class="p">):</span> <span class="k">return</span> <span class="n">handle</span> <span class="o">==</span> <span class="n">all_bit_1</span>
 
         <span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dll</span><span class="o">.</span><span class="n">MPS_OpenDevice</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="n">handle</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">OpenDeviceFailed</span><span class="p">(</span><span class="n">device_number</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Device</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">device_number</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MPS060602.configure_and_update_state"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.configure_and_update_state">[docs]</a>    <span class="k">def</span> <span class="nf">configure_and_update_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para</span><span class="p">:</span> <span class="n">MPS060602Para</span><span class="p">):</span>
+<div class="viewcode-block" id="MPS060602.configure"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para</span><span class="p">:</span> <span class="n">MPS060602Para</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Configure MPS060602 card and update the internal object state.</span>
 
 <span class="sd">        Args:</span>
@@ -211,7 +219,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ConfigureDeviceFailed: Failed to run configuration function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">def</span> <span class="nf">failed</span><span class="p">(</span><span class="n">res</span><span class="p">):</span> <span class="k">return</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__configure_raw</span><span class="p">(</span>
                 <span class="n">para</span><span class="o">.</span><span class="n">ADChannel</span><span class="p">,</span>
@@ -232,7 +240,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            DeviceStartFailed: Failed to start card.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">def</span> <span class="nf">failed</span><span class="p">(</span><span class="n">res</span><span class="p">):</span> <span class="k">return</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__start_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">DeviceStartFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -266,10 +274,10 @@
     <span class="k">def</span> <span class="nf">_data_into_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">sample_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sample_number</span><span class="p">:</span>
             <span class="n">sample_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
-        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="k">def</span> <span class="nf">failed</span><span class="p">(</span><span class="n">res</span><span class="p">):</span> <span class="k">return</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data_in_raw</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">sample_number</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">DataInFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
-        
 
 <div class="viewcode-block" id="MPS060602.to_volt"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.to_volt">[docs]</a>    <span class="k">def</span> <span class="nf">to_volt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">c_ushort</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convert internal ushort data to volt: (1 - (data / 65536) * 2) * volt_range</span>
@@ -306,13 +314,13 @@
 <div class="viewcode-block" id="MPS060602.suspend"><a class="viewcode-back" href="../../api/mps060602.html#mps060602.core.MPS060602.suspend">[docs]</a>    <span class="k">def</span> <span class="nf">suspend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Suspend the board. During suspending, :func:`MPS060602.data_in`</span>
 <span class="sd">        cannot be called.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Use :func:`MPS060602.start` to start it again.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            DeviceStopFailed: Failed to suspend the device.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">def</span> <span class="nf">failed</span><span class="p">(</span><span class="n">res</span><span class="p">):</span> <span class="k">return</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__stop_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">DeviceStopFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="kc">False</span></div>
@@ -326,7 +334,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            DeviceCloseFailed: Failed to close the device</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">failed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">def</span> <span class="nf">failed</span><span class="p">(</span><span class="n">res</span><span class="p">):</span> <span class="k">return</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">failed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__close_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">handle</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">DeviceCloseFailed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="kc">False</span></div>
